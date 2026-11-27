@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>SheCodes - Détection de Conflits</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { margin: 0; background: #f0f2f5; }
+        nav { background: #1a73e8; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        nav a { color: white; text-decoration: none; margin-right: 20px; font-weight: bold;}
+        .container { max-width: 800px; margin: 30px auto; padding: 20px; }
+        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #333; margin-top: 0; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555;}
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        button { background: #1a73e8; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold;}
+        button:hover { background: #1557b0; }
+        
+        /* Styles pour les conflits */
+        .alert { padding: 15px; margin-top: 20px; border-radius: 5px; display: none; }
+        .alert-error { background: #fde8e8; border: 1px solid #f98080; color: #c81e1e; }
+        .alert-success { background: #def7ec; border: 1px solid #31c48d; color: #03543f; }
+        .alert ul { margin: 10px 0 0 0; padding-left: 20px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <span><strong>SheCodes</strong> — Gestion EDT</span>
+        <div>
+            <a href="/dashboard">Tableau de bord</a>
+            <a href="/login">Déconnexion</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="card">
+            <h1>Créer une séance</h1>
+            <p style="color: #666; margin-bottom: 20px;">
+                Testez la détection automatique de conflits en temps réel.
+            </p>
+
+            <form id="seanceForm">
+                <div class="form-group">
+                    <label>Enseignant</label>
+                    <select id="enseignant">
+                        <option value="1">M. Dupont</option>
+                        <option value="2">Mme. Martin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Salle</label>
+                    <select id="salle">
+                        <option value="1">Amphi A (Capacité: 100)</option>
+                        <option value="2">Salle TD (Capacité: 30)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Groupe</label>
+                    <select id="groupe">
+                        <option value="1">Groupe 1 (Effectif: 40)</option>
+                        <option value="2">Groupe 2 (Effectif: 25)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Créneau</label>
+                    <select id="creneau">
+                        <option value="1">Lundi 08h - 10h</option>
+                        <option value="2">Lundi 10h - 12h</option>
+                        <option value="3">Mardi 08h - 10h</option>
+                    </select>
+                </div>
+                <button type="submit">Vérifier et Planifier</button>
+            </form>
+
+            <div id="resultat" class="alert"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('seanceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const resultat = document.getElementById('resultat');
+            resultat.style.display = 'none';
+            resultat.className = 'alert';
+            resultat.innerHTML = 'Vérification en cours...';
+            resultat.style.display = 'block';
+
+            // On prépare la requête
+            const nouvelleSeance = {
+                enseignant_id: parseInt(document.getElementById('enseignant').value),
+                salle_id: parseInt(document.getElementById('salle').value),
+                groupe_id: parseInt(document.getElementById('groupe').value),
+                creneau_id: parseInt(document.getElementById('creneau').value)
+            };
+
+            try {
+                // Appel à l'API (qui sera codée par Alyssa)
+                const res = await fetch('/api/seances/check-conflicts', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(nouvelleSeance)
+                });
+
+                if (!res.ok) throw new Error("Erreur serveur");
+
+                const data = await res.json();
+                
+                if (data.conflicts && data.conflicts.length > 0) {
+                    // Affichage des conflits
+                    resultat.className = 'alert alert-error';
+                    let html = '<strong>❌ Conflits détectés :</strong><ul>';
+                    data.conflicts.forEach(c => { html += `<li>${c}</li>`; });
+                    html += '</ul>';
+                    resultat.innerHTML = html;
+                } else {
+                    // Succès
+                    resultat.className = 'alert alert-success';
+                    resultat.innerHTML = '<strong>✅ Succès :</strong> La séance a été planifiée sans conflit.';
+                }
+            } catch (err) {
+                // Mode Démo si l'API n'est pas encore prête
+                resultat.className = 'alert alert-error';
+                resultat.innerHTML = '<strong>⚠️ Backend non disponible :</strong> Alyssa doit coder cette API. (Mode démo local actif)';
+            }
+        });
+    </script>
+</body>
+</html>
