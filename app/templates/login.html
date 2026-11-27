@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SheCodes - Connexion</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; margin: 0;
+        }
+        .login-box {
+            background: white; padding: 40px; border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2); width: 380px;
+        }
+        h1 { color: #1a73e8; text-align: center; margin: 0 0 5px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 14px; }
+        input {
+            width: 100%; padding: 12px; margin: 8px 0;
+            border: 1px solid #ddd; border-radius: 6px;
+            font-size: 14px; transition: border 0.2s;
+        }
+        input:focus { outline: none; border-color: #1a73e8; }
+        button {
+            width: 100%; padding: 12px; background: #1a73e8; color: white;
+            border: none; border-radius: 6px; cursor: pointer;
+            font-size: 16px; font-weight: bold; margin-top: 10px;
+            transition: background 0.2s;
+        }
+        button:hover { background: #1557b0; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .error {
+            color: #d32f2f; text-align: center; margin-top: 15px;
+            font-size: 14px; min-height: 20px;
+        }
+        .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>SheCodes</h1>
+        <p class="subtitle">Gestion des emplois du temps</p>
+        <form id="loginForm">
+            <input type="email" id="email" placeholder="Email" required autocomplete="email">
+            <input type="password" id="password" placeholder="Mot de passe" required autocomplete="current-password">
+            <button type="submit" id="submitBtn">Se connecter</button>
+            <div class="error" id="error"></div>
+        </form>
+        <div class="footer">Université de Béjaïa — DevOps 2026</div>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorEl = document.getElementById('error');
+            const btn = document.getElementById('submitBtn');
+
+            errorEl.textContent = '';
+            btn.disabled = true;
+            btn.textContent = 'Connexion...';
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email, password})
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    localStorage.setItem('token', data.access_token);
+                    localStorage.setItem('role', data.role || 'user');
+                    window.location.href = '/dashboard';
+                } else {
+                    errorEl.textContent = 'Identifiants incorrects';
+                }
+            } catch (err) {
+                errorEl.textContent = 'Erreur de connexion au serveur';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Se connecter';
+            }
+        });
+    </script>
+</body>
+</html>
