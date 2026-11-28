@@ -1,0 +1,18 @@
+# Fichiers locaux de test (ne pas envoyer sur GitHub)
+test_local.py
+
+# Environnements virtuels
+venv/
+env/
+.venv/
+
+# Fichiers de configuration locaux
+.env
+
+# Dossiers Python
+__pycache__/
+*.pyc
+
+# Fichiers système
+.DS_Store
+Thumbs.db
