@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SheCodes - Tableau de bord</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f1f5f9;       /* Gris perle identique au login */
+            --card-bg: #ffffff;
+            --primary: #0f172a;       /* Bleu marine */
+            --primary-accent: #3b82f6;/* Bleu éclatant */
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Barre latérale identique au panneau gauche du Login */
+        .sidebar {
+            width: 260px;
+            background-color: var(--primary);
+            background-image: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar .brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            padding-left: 10px;
+            color: white;
+        }
+
+        .sidebar nav { display: flex; flex-direction: column; gap: 10px; }
+        .sidebar nav a {
+            color: #cbd5e1; 
+            text-decoration: none; 
+            padding: 14px 15px;
+            border-radius: 8px; 
+            font-size: 14px; 
+            font-weight: 600;
+            transition: all 0.2s; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px;
+        }
+
+        .sidebar nav a:hover, .sidebar nav a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .sidebar .user-info {
+            padding: 15px; 
+            background: rgba(0,0,0,0.2); 
+            border-radius: 8px;
+            font-size: 13px; 
+            text-align: center; 
+            color: #cbd5e1;
+        }
+
+        /* Contenu principal */
+        .main-content { flex: 1; padding: 50px; overflow-y: auto; }
+
+        .header { margin-bottom: 40px; }
+        .header h1 { font-size: 32px; font-weight: 600; color: var(--text-main); margin-bottom: 5px; }
+        .header p { color: var(--text-muted); font-size: 15px; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* Cartes blanches avec de la vie */
+        .card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px -5px rgba(15, 23, 42, 0.1);
+        }
+
+        /* Icônes colorées pour la vie */
+        .icon {
+            font-size: 24px; 
+            margin-bottom: 20px;
+            width: 60px; 
+            height: 60px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        /* Couleurs spécifiques aux icônes */
+        .card:nth-child(1) .icon { background: #fee2e2; color: #ef4444; } /* Rouge */
+        .card:nth-child(2) .icon { background: #e0f2fe; color: #0ea5e9; } /* Bleu ciel */
+        .card:nth-child(3) .icon { background: #d1fae5; color: #10b981; } /* Vert menthe */
+
+        .card h3 { margin: 0 0 10px 0; font-size: 18px; color: var(--text-main); }
+        .card p { margin: 0; color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; padding: 20px; flex-direction: row; align-items: center; }
+            .sidebar .brand { margin-bottom: 0; }
+            .sidebar nav { flex-direction: row; }
+            .sidebar .user-info { display: none; }
+            .main-content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div>
+            <div class="brand">SheCodes</div>
+            <nav>
+                <a href="/dashboard" class="active">🏠 Tableau de bord</a>
+                <a href="/conflits">⚠️ Détection de conflits</a>
+                <a href="#" onclick="alert('À venir')">📅 Emplois du temps</a>
+                <a href="#" onclick="alert('À venir')">📁 Import CSV</a>
+            </nav>
+        </div>
+        <div class="user-info">
+            Connecté en tant que<br><strong>Administrateur</strong>
+            <div style="margin-top: 15px;">
+                <a href="/login" style="color: #fca5a5; text-decoration: none; font-size: 12px; font-weight: bold;">Déconnexion</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Tableau de bord</h1>
+            <p>Bienvenue dans votre espace de gestion des emplois du temps.</p>
+        </div>
+
+        <div class="grid">
+            <div class="card" onclick="window.location.href='/conflits'">
+                <div class="icon">🚨</div>
+                <h3>Détection de conflits</h3>
+                <p>Planifiez une séance et vérifiez en temps réel l'absence de conflits (salles, profs, groupes).</p>
+            </div>
+
+            <div class="card" onclick="alert('Fonctionnalité à venir : Import CSV')">
+                <div class="icon">📁</div>
+                <h3>Importation CSV</h3>
+                <p>Importez facilement vos listes d'enseignants, de salles et de groupes depuis un fichier Excel/CSV.</p>
+            </div>
+
+            <div class="card" onclick="alert('Fonctionnalité à venir : Emploi du temps')">
+                <div class="icon">📅</div>
+                <h3>Emploi du temps</h3>
+                <p>Consultez et publiez les emplois du temps par promotion, par enseignant ou par salle.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

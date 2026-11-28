@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SheCodes - Connexion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f1f5f9; /* Gris perle */
+            --card-bg: #ffffff;
+            --primary: #0f172a; /* Bleu marine très profond */
+            --primary-accent: #3b82f6; /* Bleu éclatant */
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.15);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            min-height: 550px;
+        }
+
+        /* Partie gauche : Bleu marine élégant */
+        .login-left {
+            flex: 1;
+            background-color: var(--primary);
+            background-image: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: white;
+            position: relative;
+        }
+
+        .login-left::after {
+            content: '';
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 150px; height: 150px;
+            background: var(--primary-accent);
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+        }
+
+        .login-left h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-left p {
+            font-size: 16px;
+            color: #cbd5e1;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Partie droite : Formulaire */
+        .login-right {
+            flex: 1;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-right h2 {
+            font-size: 24px;
+            color: var(--text-main);
+            margin-bottom: 30px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 14px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--primary-accent);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #1e293b;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 15px -3px rgba(15, 23, 42, 0.2);
+        }
+
+        .error { color: #dc2626; text-align: center; margin-top: 15px; font-size: 13px; min-height: 20px; }
+
+        @media (max-width: 768px) {
+            .login-container { flex-direction: column; }
+            .login-left { padding: 40px 30px; text-align: center; }
+            .login-right { padding: 40px 30px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-left">
+            <h1>SheCodes</h1>
+            <p>La plateforme intelligente pour la gestion des emplois du temps universitaires. Planifiez sans conflits, collaborez en toute simplicité.</p>
+        </div>
+        <div class="login-right">
+            <h2>Connexion</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Adresse Email</label>
+                    <input type="email" id="email" placeholder="nom@univ-bejaia.dz" required>
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" id="submitBtn">Se connecter</button>
+                <div class="error" id="error"></div>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.textContent = 'Connexion...';
+            setTimeout(() => { window.location.href = '/dashboard'; }, 800);
+        });
+    </script>
+</body>
+</html>

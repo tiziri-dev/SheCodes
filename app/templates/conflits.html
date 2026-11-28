@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SheCodes - Détection de Conflits</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f1f5f9;
+            --card-bg: #ffffff;
+            --primary: #0f172a;
+            --primary-accent: #3b82f6;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+            --success: #16a34a;
+            --success-bg: #f0fdf4;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--primary);
+            background-image: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar .brand { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; margin-bottom: 40px; padding-left: 10px; color: white; }
+        .sidebar nav { display: flex; flex-direction: column; gap: 10px; }
+        .sidebar nav a {
+            color: #cbd5e1; text-decoration: none; padding: 14px 15px;
+            border-radius: 8px; font-size: 14px; font-weight: 600;
+            transition: all 0.2s; display: flex; align-items: center; gap: 12px;
+        }
+        .sidebar nav a:hover, .sidebar nav a.active { background: rgba(255, 255, 255, 0.1); color: white; }
+        .sidebar .user-info { padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px; font-size: 13px; text-align: center; color: #cbd5e1; }
+
+        .main-content { flex: 1; padding: 50px; display: flex; justify-content: center; align-items: flex-start; }
+
+        .card {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
+            border: 1px solid var(--border);
+            width: 100%; max-width: 700px;
+        }
+
+        h1 { font-size: 24px; font-weight: 600; margin-bottom: 5px; }
+        .subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 30px; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        
+        label { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+        select, input {
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--primary-accent);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 30px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #1e293b;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+        }
+
+        .alert { padding: 20px; margin-top: 25px; border-radius: 8px; display: none; font-size: 14px; line-height: 1.5; }
+        .alert-error { background: var(--danger-bg); border: 1px solid #fecaca; color: var(--danger); }
+        .alert-success { background: var(--success-bg); border: 1px solid #bbf7d0; color: var(--success); }
+        .alert ul { margin: 10px 0 0 0; padding-left: 20px; }
+        .alert li { margin-bottom: 8px; }
+        .alert-title { font-weight: 600; display: block; margin-bottom: 5px; font-size: 15px; }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; padding: 20px; flex-direction: row; align-items: center; }
+            .sidebar .brand { margin-bottom: 0; }
+            .sidebar nav { flex-direction: row; }
+            .sidebar .user-info { display: none; }
+            .main-content { padding: 20px; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div>
+            <div class="brand">SheCodes</div>
+            <nav>
+                <a href="/dashboard">🏠 Tableau de bord</a>
+                <a href="/conflits" class="active">⚠️ Détection de conflits</a>
+                <a href="#" onclick="alert('À venir')">📅 Emplois du temps</a>
+                <a href="#" onclick="alert('À venir')">📁 Import CSV</a>
+            </nav>
+        </div>
+        <div class="user-info">
+            Connecté en tant que<br><strong>Administrateur</strong>
+            <div style="margin-top: 15px;">
+                <a href="/login" style="color: #fca5a5; text-decoration: none; font-size: 12px; font-weight: bold;">Déconnexion</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="card">
+            <h1>Planifier une séance</h1>
+            <p class="subtitle">Le système vérifiera automatiquement les 4 règles de conflits du département.</p>
+
+            <form id="seanceForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Enseignant</label>
+                        <select id="enseignant">
+                            <option value="1">M. Dupont (Info)</option>
+                            <option value="2">Mme. Martin (Maths)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Module</label>
+                        <select id="module">
+                            <option value="1">Algorithmique</option>
+                            <option value="2">Base de données</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Salle</label>
+                        <select id="salle">
+                            <option value="1">Amphi A (Capacité: 100)</option>
+                            <option value="2">Salle TD 1 (Capacité: 30)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Groupe</label>
+                        <select id="groupe">
+                            <option value="1">Groupe 1 (Effectif: 40)</option>
+                            <option value="2">Groupe 2 (Effectif: 25)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Créneau Horaire</label>
+                        <select id="creneau">
+                            <option value="1">Lundi 08h00 - 10h00</option>
+                            <option value="2">Lundi 10h00 - 12h00</option>
+                            <option value="3">Mardi 08h00 - 10h00</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit">Vérifier et Planifier</button>
+                <button type="button" id="btnExportIcal" style="display: none; background: #10b981; margin-top: 15px;">📅 Ajouter au calendrier (iCal)</button>
+            </form>
+
+            <div id="resultat" class="alert"></div>
+        </div>
+    </div>
+
+    <script>
+    let seanceValidee = null; // Variable pour stocker la séance si elle est valide
+
+    document.getElementById('seanceForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const resultat = document.getElementById('resultat');
+        const btnExport = document.getElementById('btnExportIcal');
+        
+        resultat.style.display = 'none';
+        resultat.className = 'alert';
+        btnExport.style.display = 'none'; // On cache le bouton iCal à chaque essai
+
+        // Récupération des valeurs du formulaire
+        const selectEnseignant = document.getElementById('enseignant');
+        const selectSalle = document.getElementById('salle');
+        const selectGroupe = document.getElementById('groupe');
+        const selectCreneau = document.getElementById('creneau');
+
+        const nouvelleSeance = {
+            enseignant_id: parseInt(selectEnseignant.value),
+            salle_id: parseInt(selectSalle.value),
+            groupe_id: parseInt(selectGroupe.value),
+            creneau_id: parseInt(selectCreneau.value)
+        };
+
+        try {
+            const res = await fetch('/api/seances/check-conflicts', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(nouvelleSeance)
+            });
+
+            if (!res.ok) throw new Error("Erreur serveur");
+            const data = await res.json();
+            
+            if (data.conflicts && data.conflicts.length > 0) {
+                // Il y a des conflits
+                resultat.className = 'alert alert-error';
+                let html = '<span class="alert-title">🚨 Conflits détectés</span><ul>';
+                data.conflicts.forEach(c => { html += `<li>${c}</li>`; });
+                html += '</ul>';
+                resultat.innerHTML = html;
+            } else {
+                // Succès
+                resultat.className = 'alert alert-success';
+                resultat.innerHTML = '<span class="alert-title">✅ Succès</span> La séance a été planifiée sans aucun conflit.';
+                
+                // On prépare les données pour l'export iCal
+                seanceValidee = {
+                    enseignant: selectEnseignant.options[selectEnseignant.selectedIndex].text,
+                    salle: selectSalle.options[selectSalle.selectedIndex].text,
+                    groupe: selectGroupe.options[selectGroupe.selectedIndex].text,
+                    creneau: selectCreneau.options[selectCreneau.selectedIndex].text
+                };
+                btnExport.style.display = 'block'; // On affiche le bouton iCal
+            }
+            resultat.style.display = 'block';
+        } catch (err) {
+            resultat.className = 'alert alert-error';
+            resultat.innerHTML = '<span class="alert-title">⚠️ Mode Démo</span> L\'API backend n\'est pas encore connectée.';
+            resultat.style.display = 'block';
+        }
+    });
+
+    // --- FONCTION D'EXPORT iCAL ---
+    document.getElementById('btnExportIcal').addEventListener('click', () => {
+        if (!seanceValidee) return;
+
+        // Formatage de la date pour iCal (AAAAMMJJTHHMMSS)
+        // On simule une date (ex: le prochain lundi à 08h00)
+        const now = new Date();
+        const dateDebut = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (8 - now.getDay()) % 7, 8, 0, 0);
+        const dateFin = new Date(dateDebut.getTime() + 2 * 60 * 60 * 1000); // +2 heures
+
+        const formatDate = (date) => {
+            return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        };
+
+        // Contenu du fichier .ics
+        const icsContent = 
+`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//SheCodes//Gestion EDT//FR
+BEGIN:VEVENT
+SUMMARY:Cours - ${seanceValidee.groupe}
+DESCRIPTION:Enseignant : ${seanceValidee.enseignant}\\nSalle : ${seanceValidee.salle}
+LOCATION:${seanceValidee.salle}
+DTSTART:${formatDate(dateDebut)}
+DTEND:${formatDate(dateFin)}
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR`;
+
+        // Téléchargement du fichier
+        const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = `seance_${seanceValidee.groupe.replace(/\s+/g, '_')}.ics`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+</script>
+</body>
+</html>
