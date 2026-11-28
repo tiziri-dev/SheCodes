@@ -1,18 +1,14 @@
-# Fichiers locaux de test (ne pas envoyer sur GitHub)
-test_local.py
-
-# Environnements virtuels
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
 venv/
 env/
-.venv/
-
-# Fichiers de configuration locaux
 .env
-
-# Dossiers Python
-__pycache__/
-*.pyc
-
-# Fichiers système
-.DS_Store
-Thumbs.db
+.coverage
+htmlcov/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
